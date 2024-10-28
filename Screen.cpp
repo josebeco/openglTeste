@@ -1,7 +1,5 @@
 #include <GL/glut.h>
-#include <iostream>
 using namespace std;
-#include "Screen.h"
 int WIDTH = 0;
 int HEIGHT = 0;
 GLubyte *pixels = NULL;
