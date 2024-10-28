@@ -1,3 +1,3 @@
 build:
-	g++ -o teste teste.cpp Screen.cpp -lglut -lGLU -lGL 
-	./teste
+	g++ -o game Main.cpp Screen.cpp -lglut -lGLU -lGL 
+	./game

@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include "Main.h"
 using namespace std;
 int WIDTH = 0;
 int HEIGHT = 0;
@@ -9,21 +10,20 @@ void initGL()
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
+void setPixel(int i, int j, int r, int g, int b)
+{
+    int position = (i * WIDTH + j) * 3;
+    pixels[position++] = r;
+    pixels[position++] = g;
+    pixels[position] = b;
+}
+
 void display()
 {
+    cycle();
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    /*for (int i = 0; i < HEIGHT; i++)
-    {
-        for (int j = 0; j < WIDTH; j++)
-        {
-            cout << int(pixels[i * WIDTH + j]) << " " << endl;
-        }
-    }*/
-
     glDrawPixels(WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, pixels);
     glutSwapBuffers();
-    glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -36,13 +36,12 @@ void keyboard(unsigned char key, int x, int y)
     }
 }
 
-void setPixel(int i, int j, int r, int g, int b)
-{
-    int position = (i * WIDTH + j) * 3;
-    pixels[position++] = r;
-    pixels[position++] = g;
-    pixels[position] = b;
+void timer(int extra){
+    glutPostRedisplay();
+    glutTimerFunc(20, timer, 0); //50 fps 1000 / 20
 }
+
+
 
 void start(int argc, char **argv)
 {
@@ -54,6 +53,7 @@ void start(int argc, char **argv)
     initGL();
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutTimerFunc(0, timer, 0);
     glutMainLoop();
 }
 
