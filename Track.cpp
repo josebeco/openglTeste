@@ -40,6 +40,4 @@ void createRoad(int h, int w, int endLength, int borderSize)
             ROAD[(i * WIDTH) + WIDTH - j - 1] = ROAD[position];
         }
     }
-
-    
 }
