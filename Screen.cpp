@@ -12,7 +12,7 @@ void initGL()
 
 void setPixel(int i, int j, int r, int g, int b)
 {
-    int position = (i * WIDTH + j) * 3;
+    int position = (i * WIDTH+ j) * 3;
     pixels[position++] = r;
     pixels[position++] = g;
     pixels[position] = b;
