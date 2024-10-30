@@ -1,6 +1,6 @@
 #include "Screen.h"
-#define WIDTH 400
-#define HEIGHT 400
+#define WIDTH 480
+#define HEIGHT 360
 int c = 0;
 int f []= {255, 0 , 0};
 
@@ -10,15 +10,15 @@ int main(int argc, char **argv)
     start(argc, argv);
 }
 
-void cycle()
+void cycle() 
 {
     c++;
     c %= 3;
-    for (int i = 0; i < WIDTH; i++)
+    for (int i = 0; i < 210; i++)
     {
-        for (int j = 0; j < HEIGHT; j++)
+        for (int j = 0; j < WIDTH; j++)
         {
-            if (i == j)
+            if (i == j || WIDTH - j - 1 == i)
             {
                 continue;
             }
