@@ -61,11 +61,16 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
 
 void showRoad()
 {
+    int c = 1;
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
+        if(i % 15 == 0){
+            c ^= 1;
+        }
+
         for (int j = 0; j < WIDTH_ROAD; j++)
         {
-            struct RGB values = TEXTURE[0][ROAD[(i * WIDTH_ROAD) + j]];
+            struct RGB values = TEXTURE[c][ROAD[(i * WIDTH_ROAD) + j]];
             setPixel(i, j, values.r, values.g, values.b);
         }
     }

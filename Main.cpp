@@ -13,6 +13,6 @@ int main(int argc, char **argv)
 
 void cycle() 
 {
-    createRoad(WIDTH, 210, 9, 5, 2, 0);
+    createRoad(WIDTH, 210, 9, 5, 2, 1);
     showRoad();
 }
