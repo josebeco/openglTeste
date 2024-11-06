@@ -19,8 +19,8 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
     const int BORDER_RATIO = HEIGTH_ROAD / (borderSize - endBorderSize);
     const int MIDDLE_RATIO = 2 * HEIGTH_ROAD / (middleLine - endMiddleLine); // Diminui de dois em dois
 
-    borderSize++; // negar 0 % ratio
-    middleLine +=2; // negar 0 % ratio
+    borderSize++;    // negar 0 % ratio
+    middleLine += 2; // negar 0 % ratio
 
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
@@ -61,10 +61,11 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
 
 void showRoad()
 {
-    int c = 1;
+    int c = 0;
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
-        if(i % 15 == 0){
+        if (i % 15 == 0)
+        {
             c ^= 1;
         }
 
