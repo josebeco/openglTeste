@@ -10,13 +10,26 @@ short *ROAD;
 int HEIGTH_ROAD;
 int WIDTH_ROAD;
 
-void createRoad(int w, int h, int borderSize, int middleLine)
+void createRoad(int width, int heigth, int borderSize, int middleLine, int endBorderSize, int endMiddleLine)
 {
-    HEIGTH_ROAD = h;
-    WIDTH_ROAD = w;
+    HEIGTH_ROAD = heigth;
+    WIDTH_ROAD = width;
     ROAD = new short[HEIGTH_ROAD * WIDTH_ROAD];
+
+    const int BORDER_RATIO = HEIGTH_ROAD / (borderSize - endBorderSize);
+    const int MIDDLE_RATIO = 2 * HEIGTH_ROAD / (middleLine - endMiddleLine); // Diminui de dois em dois
+
+    borderSize++; // negar 0 % ratio
+    middleLine +=2; // negar 0 % ratio
+
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
+        if (i % BORDER_RATIO == 0)
+            borderSize--;
+
+        if (i % MIDDLE_RATIO == 0)
+            middleLine -= 2;
+
         for (int j = 0; j < WIDTH_ROAD / 2 - middleLine / 2; j++)
         {
             int position = (i * WIDTH_ROAD) + j;
@@ -35,7 +48,10 @@ void createRoad(int w, int h, int borderSize, int middleLine)
 
             ROAD[(i * WIDTH_ROAD) + WIDTH_ROAD - j - 1] = ROAD[position];
         }
-        for (int j = 0; j <= middleLine / 2; j++)
+
+        ROAD[(i * WIDTH_ROAD) + WIDTH_ROAD / 2] = 3; // set middle line center
+
+        for (int j = 1; j <= middleLine / 2; j++)
         {
             ROAD[(i * WIDTH_ROAD) + WIDTH_ROAD / 2 - j] = 3;
             ROAD[(i * WIDTH_ROAD) + WIDTH_ROAD / 2 + j] = 3;
