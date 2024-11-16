@@ -6,12 +6,12 @@
 
 int main(int argc, char **argv)
 {
-    createRoad(WIDTH, 210, 9, 5, 2, 1);
+    createRoad(WIDTH, 210, 9, 5, 2, 1, 15);
     init(WIDTH, HEIGHT);
     start(argc, argv); 
 }
 
 void cycle() 
 {
-    showRoad();
+    showRoad(100, 5);
 }

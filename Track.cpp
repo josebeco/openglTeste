@@ -1,19 +1,36 @@
 #include "Screen.h"
+
 struct RGB
 {
     short r;
     short g;
     short b;
 };
-const struct RGB TEXTURE[][4] = {{{0, 255, 0}, {255, 0, 0}, {128, 128, 128}, {255, 255, 255}}, {{0, 175, 0}, {255, 255, 255}, {75, 75, 75}, {75, 75, 75}}}; // 0 grama, 1 borda rua, 2 estrada, 3- faixa
+const struct RGB TEXTURE[][4] = {{{0, 255, 0}, {255, 0, 0}, {128, 128, 128}, {255, 255, 255}},
+                                 {{0, 175, 0}, {255, 255, 255}, {110, 110, 110}, {110, 110, 110}}};
+// 0 grama, 1 borda rua, 2 estrada, 3- faixa
+
+struct Section
+{
+    int length;
+    short turn_rate;
+    short end_x;
+    short rate_rate;
+};
+const struct Section Track[] = {{300, 0, 0, 1}, {200, 2, 0, 2}};
+
 short *ROAD;
 int HEIGTH_ROAD;
 int WIDTH_ROAD;
+int road_z = 0;
+int section_index = 0;
+int TEXTURE_RATE;
 
-void createRoad(int width, int heigth, int borderSize, int middleLine, int endBorderSize, int endMiddleLine)
+void createRoad(int width, int heigth, int borderSize, int middleLine, int endBorderSize, int endMiddleLine, int textureRate)
 {
     HEIGTH_ROAD = heigth;
     WIDTH_ROAD = width;
+    TEXTURE_RATE = textureRate;
     ROAD = new short[HEIGTH_ROAD * WIDTH_ROAD];
 
     const int BORDER_RATIO = HEIGTH_ROAD / (borderSize - endBorderSize);
@@ -59,19 +76,18 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
     }
 }
 
-void showRoad()
+void showRoad(int x_shift, int z_increase) // x é 0 no centro
 {
-    int c = 0;
+    road_z += z_increase;
+    road_z % (TEXTURE_RATE * 2);
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
-        if (i % 15 == 0)
-        {
-            c ^= 1;
-        }
-
         for (int j = 0; j < WIDTH_ROAD; j++)
         {
-            struct RGB values = TEXTURE[c][ROAD[(i * WIDTH_ROAD) + j]];
+            int position = (i * WIDTH_ROAD) + j + x_shift;
+            int color = (road_z + i) % (TEXTURE_RATE * 2) >= TEXTURE_RATE;
+            
+            struct RGB values = (j + x_shift < 0 || j + x_shift >= WIDTH_ROAD) ? TEXTURE[color][0] : TEXTURE[color][ROAD[position]];
             setPixel(i, j, values.r, values.g, values.b);
         }
     }
