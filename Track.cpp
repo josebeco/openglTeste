@@ -1,5 +1,8 @@
 #include "Screen.h"
 #include <iostream>
+#define MIN(a, b) ((a) < (b)) ? (a) : (b)
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 struct RGB
 {
     short r;
@@ -16,7 +19,7 @@ struct Section
     short turn_rate;
     short end_x;
 };
-const struct Section Track[] = {{1000, 0, 0}, {1500, 1, 0}};
+const struct Section Track[] = {{1000, 0, 0}, {1400, 1, 0}};
 const int track_length = 2;
 
 short *ROAD;
@@ -79,7 +82,7 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
 void showRoad(int x_shift, int z_increase) // x é 0 no centro
 {
     road_z += z_increase;
-    if (road_z > Track[section_index].end_z)
+    if (road_z >= Track[section_index].end_z)
     {
         if (section_index + 1 >= track_length)
         {
@@ -92,27 +95,36 @@ void showRoad(int x_shift, int z_increase) // x é 0 no centro
 
     int med_section_index = section_index;
     struct Section current_section = Track[med_section_index];
+    int section_start_z = (med_section_index > 0) ? Track[med_section_index - 1].end_z : 0;
 
-    int turn_shift = 0;
-    int mid_point = ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) + (current_section.end_z - ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0)) / 2;
+    int mid_point = section_start_z + (current_section.end_z - section_start_z) / 2;
+    int turn_shift = current_section.turn_rate * (MIN(road_z - section_start_z, mid_point) - MAX(road_z - mid_point, 0));
 
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
-        if (med_section_index >= track_length)
-        {
-            turn_shift = 0;
-            current_section = {0, 0, 0};
-        }
-        else if (road_z + i > current_section.end_z)
+
+        if (med_section_index < track_length && road_z + i >= current_section.end_z)
         {
             med_section_index++;
-            turn_shift = 0;
-            current_section = Track[med_section_index];
-            mid_point = ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) + ((current_section.end_z - (med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) / 2);
+            if (med_section_index >= track_length)
+            {
+                turn_shift = 0;
+                current_section = {0, 0, 0};
+                mid_point = 0;
+            }
+            else
+            {
+                turn_shift = 0;
+
+                current_section = Track[med_section_index];
+                section_start_z = (med_section_index > 0) ? Track[med_section_index - 1].end_z : 0;
+
+                mid_point = section_start_z + (current_section.end_z - section_start_z) / 2;
+            }
         }
 
         turn_shift += current_section.turn_rate * ((road_z + i < mid_point) ? 1 : -1);
-        std::cout << turn_shift << std::endl;
+        std::cout << turn_shift << "  " << mid_point << " " << (road_z + i) << std::endl;
         for (int j = 0; j < WIDTH_ROAD; j++)
         {
             int x_cordinate = j + x_shift + turn_shift;
