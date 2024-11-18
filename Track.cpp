@@ -1,5 +1,5 @@
 #include "Screen.h"
-
+#include <iostream>
 struct RGB
 {
     short r;
@@ -12,12 +12,12 @@ const struct RGB TEXTURE[][4] = {{{0, 255, 0}, {255, 0, 0}, {128, 128, 128}, {25
 
 struct Section
 {
-    int length;
+    int end_z;
     short turn_rate;
     short end_x;
-    short rate_rate;
 };
-const struct Section Track[] = {{300, 0, 0, 1}, {200, 2, 0, 2}};
+const struct Section Track[] = {{1000, 0, 0}, {1500, 1, 0}};
+const int track_length = 2;
 
 short *ROAD;
 int HEIGTH_ROAD;
@@ -79,15 +79,46 @@ void createRoad(int width, int heigth, int borderSize, int middleLine, int endBo
 void showRoad(int x_shift, int z_increase) // x é 0 no centro
 {
     road_z += z_increase;
-    road_z % (TEXTURE_RATE * 2);
+    if (road_z > Track[section_index].end_z)
+    {
+        if (section_index + 1 >= track_length)
+        {
+            // acabo a pista TODO
+            return;
+        }
+
+        section_index++;
+    }
+
+    int med_section_index = section_index;
+    struct Section current_section = Track[med_section_index];
+
+    int turn_shift = 0;
+    int mid_point = ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) + (current_section.end_z - ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0)) / 2;
+
     for (int i = 0; i < HEIGTH_ROAD; i++)
     {
+        if (med_section_index >= track_length)
+        {
+            turn_shift = 0;
+            current_section = {0, 0, 0};
+        }
+        else if (road_z + i > current_section.end_z)
+        {
+            med_section_index++;
+            turn_shift = 0;
+            current_section = Track[med_section_index];
+            mid_point = ((med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) + ((current_section.end_z - (med_section_index > 0) ? Track[med_section_index - 1].end_z : 0) / 2);
+        }
+
+        turn_shift += current_section.turn_rate * ((road_z + i < mid_point) ? 1 : -1);
+        std::cout << turn_shift << std::endl;
         for (int j = 0; j < WIDTH_ROAD; j++)
         {
-            int position = (i * WIDTH_ROAD) + j + x_shift;
+            int x_cordinate = j + x_shift + turn_shift;
             int color = (road_z + i) % (TEXTURE_RATE * 2) >= TEXTURE_RATE;
-            
-            struct RGB values = (j + x_shift < 0 || j + x_shift >= WIDTH_ROAD) ? TEXTURE[color][0] : TEXTURE[color][ROAD[position]];
+
+            struct RGB values = (x_cordinate < 0 || x_cordinate >= WIDTH_ROAD || med_section_index >= track_length) ? TEXTURE[color][0] : TEXTURE[color][ROAD[(i * WIDTH_ROAD) + x_cordinate]];
             setPixel(i, j, values.r, values.g, values.b);
         }
     }

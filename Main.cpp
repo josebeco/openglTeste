@@ -13,5 +13,5 @@ int main(int argc, char **argv)
 
 void cycle() 
 {
-    showRoad(100, 5);
+    showRoad(0, 5);
 }
